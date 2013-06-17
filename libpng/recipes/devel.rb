@@ -6,7 +6,9 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+include_recipe "libpng"
+
 case node['platform_family']
 when "rhel","fedora"
-  package "zlib"
+  package "libpng-devel"
 end

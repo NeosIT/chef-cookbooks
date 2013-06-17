@@ -8,5 +8,5 @@
 #
 case node['platform_family']
 when "rhel","fedora"
-  package "zlib"
+  package "libpng"
 end

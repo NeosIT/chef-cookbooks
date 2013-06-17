@@ -6,7 +6,9 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+include_recipe "libtiff"
+
 case node['platform_family']
 when "rhel","fedora"
-  package "zlib"
+  package "libtiff-devel"
 end

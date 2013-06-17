@@ -6,3 +6,7 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+case node['platform_family']
+when "rhel","fedora"
+    package zlib-devel 
+end

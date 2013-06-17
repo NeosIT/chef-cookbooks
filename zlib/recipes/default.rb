@@ -8,5 +8,9 @@
 #
 case node['platform_family']
 when "rhel","fedora"
-    package zlib 
+  package "zlib"
 end
+
+#package "zlib" do
+#  action :install
+#end

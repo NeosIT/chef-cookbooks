@@ -19,32 +19,21 @@ include_recipe "tesseract"
 include_recipe "graphicsmagick"
 include_recipe "nodejs"
 include_recipe "xpdf"
+include_recipe "daemon"
 
-directory "#{node['enrichpdf']['dir']}" do
-  owner "root"
-  group "root"
-  mode 00775
-  action :create
-end
+include_recipe "enrichpdf::install_from_#{node['enrichpdf']['install_method']}"
 
 #workaround
 %w{logs procs}.each do |dir|
   directory "#{node['enrichpdf']['dir']}/#{dir}" do
     owner "root"
     group "root"
-    mode 00775
+    mode 00755
     action :create
   end
 end
 
-directory "/usr/local/src" do
-  owner "root"
-  group "root"
-  mode 00775
-  action :create
-end
 
-include_recipe "enrichpdf::install_from_#{node['enrichpdf']['install_method']}"
 
 execute "npm install" do
   cwd "#{node['enrichpdf']['dir']}"
@@ -56,20 +45,20 @@ template "/etc/init.d/enrichpdf" do
   source "enrichpdf.erb"
   owner "root"
   group "root"
-  mode 00775
+  mode 00755
 end
 
 template "#{node['enrichpdf']['dir']}/config/default.json" do
   source "default.json.erb"
   owner "root"
   group "root"
-mode 00664
+mode 00644
 end
 
 directory "#{node['enrichpdf']['watchpath']}" do
   owner "root"
   group "root"
-  mode 00775
+  mode 00755
   action :create
 end
 

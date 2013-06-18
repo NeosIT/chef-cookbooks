@@ -24,13 +24,6 @@ tesseract_eng_src_url = "#{node['tesseract']['src_url']}/#{tesseract_eng_tar}"
 tesseract_deu_src_url = "#{node['tesseract']['src_url']}/#{tesseract_deu_tar}"
 
 
-directory "/usr/local/src" do
-  owner "root"
-  group "root"
-  mode 00644
-  action :create
-end
-
 remote_file "/usr/local/src/#{tesseract_eng_tar}" do
   source tesseract_eng_src_url
   mode 0644

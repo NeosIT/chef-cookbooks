@@ -24,14 +24,6 @@ leptonica_tar = "leptonica-#{node['leptonica']['version']}.tar.gz"
 leptonica_src_url = "#{node['leptonica']['src_url']}/#{leptonica_tar}"
 
 
-directory "/usr/local/src" do
-  owner "root"
-  group "root"
-  mode 00755
-  action :create
-end
-
-
 remote_file "/usr/local/src/#{leptonica_tar}" do
   source leptonica_src_url
   mode 0644

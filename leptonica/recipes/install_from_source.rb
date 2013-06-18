@@ -27,7 +27,7 @@ leptonica_src_url = "#{node['leptonica']['src_url']}/#{leptonica_tar}"
 directory "/usr/local/src" do
   owner "root"
   group "root"
-  mode 00644
+  mode 00755
   action :create
 end
 

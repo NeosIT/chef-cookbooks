@@ -45,7 +45,7 @@ end
 
 remote_file "/usr/local/src/#{tesseract_tar}" do
   source tesseract_src_url
-  mode 0644
+  mode 0755
   action :create_if_missing
 end
 

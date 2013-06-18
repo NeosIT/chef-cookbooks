@@ -14,6 +14,10 @@
 default['enrichpdf']['install_method'] = 'git'
 default['enrichpdf']['version'] = '0.1'
 default['enrichpdf']['dir'] = '/opt/EnrichPDF'
-default['enrichpdf']['src_url'] = "http://foo.bar"
-default['enrichpdf']['git_url'] = "git://github.com/NeosIT/enrichpdf.git"
+default['enrichpdf']['watchpath'] = '/var/EnrichPDF'
+default['enrichpdf']['src_url'] = 'http://foo.bar'
+default['enrichpdf']['git_url'] = 'git://github.com/NeosIT/enrichpdf.git'
+default['enrichpdf']['smtp_url'] = 'ex1.neos-it.local'
+default['enrichpdf']['smtp_port'] = '25'
+default['enrichpdf']['web_port'] = '54321'
 default['enrichpdf']['make_threads'] = node['cpu'] ? node['cpu']['total'].to_i : 2

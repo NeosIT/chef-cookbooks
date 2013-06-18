@@ -12,29 +12,8 @@
 # limitations under the License.
 #
 
-include_recipe "tesseract"
-include_recipe "graphicsmagick"
-include_recipe "nodejs"
 include_recipe "git"
 
-
-#leptonica_tar = "leptonica-#{node['leptonica']['version']}.tar.gz"
-#tesseract_git_url = "#{node['leptonica']['src_url']}/#{leptonica_tar}"
-
-
-directory "#{node['enrichpdf']['dir']}" do
-  owner "root"
-  group "root"
-  mode 00755
-  action :create
-end
-
-directory "/usr/local/src" do
-  owner "root"
-  group "root"
-  mode 00755
-  action :create
-end
 
 execute "git clone #{node['enrichpdf']['git_url']}" do
   cwd "/usr/local/src"
@@ -42,31 +21,3 @@ execute "git clone #{node['enrichpdf']['git_url']}" do
   creates "#{node['enrichpdf']['dir']}/.git"
 end
 
-#remote_file "/usr/local/src/enrichpdf"
-#  source #{node['enrichpdf']['git_url']}
-#  mode 0755
-#  action :create_if_missing
-#end
-
-# --no-same-owner required overcome "Cannot change ownership" bug
-# on NFS-mounted filesystem
-#execute "tar --no-same-owner -zxf #{leptonica_tar}" do
-#  cwd "/usr/local/src"
-#  creates "/usr/local/src/leptonica-#{node['leptonica']['version']}"
-#end
-
-#bash "compile leptonica (on #{node['leptonica']['make_threads']} cpu)" do
-#  # OSX doesn't have the attribute so arbitrarily default 2
-#  cwd "/usr/local/src/leptonica-#{node['leptonica']['version']}"
-#  code <<-EOH
-#    ./configure --prefix=#{node['leptonica']['dir']} && \
-#    make -j #{node['leptonica']['make_threads']}
-#  EOH
-#  creates "/usr/local/src/leptonica-#{node['leptonica']['version']}/src/.libs/liblept.so"
-#end
-
-#execute "leptonica make install" do
-#  command "make install && /sbin/ldconfig"
-#  cwd "/usr/local/src/leptonica-#{node['leptonica']['version']}"
-#  creates "#{node['leptonica']['dir']}/lib/liblept.so"
-#end

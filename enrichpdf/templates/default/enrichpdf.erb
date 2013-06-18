@@ -1,0 +1,99 @@
+#!/bin/sh
+
+#
+# chkconfig: 35 99 99
+#
+
+. /etc/rc.d/init.d/functions
+
+USER="root"
+
+DAEMON="/usr/bin/node"
+ROOT_DIR="<%= node['enrichpdf']['dir'] %>"
+
+SERVER="$ROOT_DIR/server.js"
+LOG_FILE="$ROOT_DIR/server.js.log"
+
+LOCK_FILE="/var/lock/subsys/node-server"
+PID_FILE="/var/run/enrichpdf.pid"
+
+do_start()
+{
+        if [ ! -f "$LOCK_FILE" ] ; then
+                echo -n $"Starting $SERVER: "
+                runuser -l "$USER" -c "$DAEMON $SERVER >> $LOG_FILE &" && echo_success || echo_failure
+                RETVAL=$?
+                echo `ps ax | grep node | grep $SERVER |cut -d " " -f 1` > $PID_FILE
+		echo
+                [ $RETVAL -eq 0 ] && touch $LOCK_FILE
+        else
+		status -p $PID_FILE $DAEMON >& /dev/null
+		if [ $? -eq 0 ]; then
+			echo "$SERVER locked and running."
+			RETVAL=1
+		else
+			echo "$SERVER is locked but dead, restarting..."
+			do_zap
+			do_start
+		fi
+        fi
+}
+do_stop()
+{
+        echo -n $"Stopping $SERVER: "
+        pid=`cat $PID_FILE`
+        kill -9 $pid > /dev/null 2>&1 && echo_success || echo_failure
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && rm -f $LOCK_FILE $PID_FILE
+}
+do_zap()
+{
+        echo  -n $"Resetting to stopped state"
+        rm -f $LOCK_FILE $PID_FILE && echo_success || echo_failure
+        echo
+}
+
+
+do_status() {
+
+	status -p $PID_FILE $DAEMON 
+}
+
+
+do_reload() {
+        echo -n $"$SERVER: Reloading Config"
+        pid=`cat $PID_FILE`
+        #kill -HUP $pid > /dev/null 2>&1 && echo_success || echo_failure
+        RETVAL=$?
+        echo
+}
+
+
+case "$1" in
+        start)
+                do_start
+                ;;
+        stop)
+                do_stop
+                ;;
+        restart)
+                do_stop
+                do_start
+                ;;
+        zap)
+                do_zap
+		;;
+	status)
+		do_status
+                ;;
+        reload)
+    		do_reload
+    		;;
+        *)
+                echo "Usage: $0 {start|stop|restart|zap|status|reload}"
+                RETVAL=1
+esac
+
+exit $RETVAL
+

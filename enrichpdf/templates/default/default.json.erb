@@ -1,0 +1,29 @@
+{
+    "app": {
+        "path": ""
+    },
+
+    "logging": {
+        "dirname": "./logs"
+    },
+
+    "web": {
+        "port": <%= node['enrichpdf']['web_port'] %>
+    },
+
+    "ocr": {
+        "store": "./procs",
+        "debug": true,
+        "watchPaths": [
+            {
+                "in": "<%= node['enrichpdf']['watchpath'] %>/in",
+                "out": "<%= node['enrichpdf']['watchpath'] %>/out"
+            }
+        ]
+    },
+
+    "email": {
+        "host": "<%= node['enrichpdf']['smtp_url'] %>",
+        "port": <%= node['enrichpdf']['smtp_port'] %>
+    }
+}

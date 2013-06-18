@@ -15,4 +15,75 @@ case node['platform_family']
    include_recipe "apt"
 end
 
+include_recipe "tesseract"
+include_recipe "graphicsmagick"
+include_recipe "nodejs"
+include_recipe "xpdf"
+
+directory "#{node['enrichpdf']['dir']}" do
+  owner "root"
+  group "root"
+  mode 00775
+  action :create
+end
+
+#workaround
+%w{logs procs}.each do |dir|
+  directory "#{node['enrichpdf']['dir']}/#{dir}" do
+    owner "root"
+    group "root"
+    mode 00775
+    action :create
+  end
+end
+
+directory "/usr/local/src" do
+  owner "root"
+  group "root"
+  mode 00775
+  action :create
+end
+
 include_recipe "enrichpdf::install_from_#{node['enrichpdf']['install_method']}"
+
+execute "npm install" do
+  cwd "#{node['enrichpdf']['dir']}"
+  command "npm install"
+  creates "#{node['enrichpdf']['dir']}/node_modules"
+end
+
+template "/etc/init.d/enrichpdf" do
+  source "enrichpdf.erb"
+  owner "root"
+  group "root"
+  mode 00775
+end
+
+template "#{node['enrichpdf']['dir']}/config/default.json" do
+  source "default.json.erb"
+  owner "root"
+  group "root"
+mode 00664
+end
+
+directory "#{node['enrichpdf']['watchpath']}" do
+  owner "root"
+  group "root"
+  mode 00775
+  action :create
+end
+
+%w{in out}.each do |dir|
+  directory "#{node['enrichpdf']['watchpath']}/#{dir}" do
+    owner "root"
+    group "root"
+    mode 00777
+    action :create
+  end
+end
+
+service "enrichpdf" do
+  supports :restart => true, :status => true, :reload => true
+  action [:enable, :start]
+  subscribes :reload, "template[#{node['enrichpdf']['dir']}/config/default.json]", :immediately
+end
